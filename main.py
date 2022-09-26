@@ -29,8 +29,10 @@ def draw_window_and_object():
 
     screen.blit(spaceShip.spaceShipObject, (spaceShip.X, spaceShip.Y))
 
-    for brick in wall.queue:
-        pygame.draw.rect(screen, brick.color, pygame.Rect(brick.x, brick.y, brick.width, brick.height), 0, 3)
+    for layer in wall.queue:
+        for brick in layer.getAllBricks():
+            if brick is not None:
+                pygame.draw.rect(screen, brick.color, pygame.Rect(brick.x, brick.y, brick.width, brick.height), 0, 3)
 
     wall.addLayerOfBricks()
 
@@ -40,6 +42,12 @@ def handle_bullets_fire():
         return
     for bullet in bullets:
         pygame.draw.rect(screen, (255, 0, 0), bullet)
+        for layer in wall.queue:
+            for brick in layer.getAllBricks():
+                if brick is not None:
+                    if bullet.colliderect(pygame.Rect(brick.x, brick.y, brick.width, brick.height)):
+                        bullets.remove(bullet)
+                        layer.removeBrick(brick.x, brick.y)
         bullet.y -= 3
         if bullet.y < 0:
             bullets.remove(bullet)
