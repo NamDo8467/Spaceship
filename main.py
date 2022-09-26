@@ -1,5 +1,4 @@
 import pygame
-
 from src.Spaceship import Spaceship
 from src.Wall import Wall
 
@@ -14,6 +13,7 @@ SPACESHIP_Y = 420
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption(TITLE)
 background = pygame.image.load("images\\spaceBackground.jpg").convert()
+
 
 running = True
 
@@ -41,21 +41,20 @@ def handle_bullets_fire():
     if len(bullets) == 0:
         return
     for bullet in bullets:
-        pygame.draw.rect(screen, (255, 0, 0), bullet)
+        pygame.draw.rect(screen, bullet["color"], bullet["shape"])
         for layer in wall.queue:
             for brick in layer.getAllBricks():
-                if brick is not None:
-                    if bullet.colliderect(pygame.Rect(brick.x, brick.y, brick.width, brick.height)):
-                        bullets.remove(bullet)
-                        layer.removeBrick(brick.x, brick.y)
-        bullet.y -= 3
-        if bullet.y < 0:
+                if spaceShip.detect_collision(brick, bullet):
+                    bullets.remove(bullet)
+                    layer.removeBrick(brick.x)
+        bullet["shape"].y -= 3
+        if bullet["shape"].y < 0:
             bullets.remove(bullet)
 
 
 def handle_movement(keys):
     if keys[pygame.K_RIGHT] and spaceShip.X < SCREEN_WIDTH - 50:
-        spaceShip.X += 20
+        spaceShip.X += 10
     if keys[pygame.K_LEFT] and spaceShip.X > 0:
         spaceShip.X -= 10
 
