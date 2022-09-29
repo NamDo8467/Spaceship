@@ -14,8 +14,3 @@ class Brick:
     @property
     def width(self):
         return self.__width
-
-
-
-
-

@@ -15,11 +15,9 @@ class Spaceship:
     def fire(self):
         color_code = self.__color_list[randrange(0, len(self.__color_list))]
         bullet = {"color": color_code, "shape": pygame.Rect(self.X + 20, self.Y - 25, 10, 10)}
-
         return bullet
 
     def detect_collision(self, brick, bullet):
-        if brick is not None and bullet["shape"].colliderect(
-                pygame.Rect(brick.x, brick.y, brick.width, brick.height)):
+        if bullet["shape"].colliderect(pygame.Rect(brick.x, brick.y, brick.width, brick.height)):
             if brick.color == bullet["color"]:
                 return True

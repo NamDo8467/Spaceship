@@ -2,7 +2,6 @@ import pygame
 from src.Spaceship import Spaceship
 from src.Wall import Wall
 
-
 pygame.init()
 
 TITLE = "GAME"
@@ -23,33 +22,35 @@ wall = Wall()
 
 bullets = []
 
+removed_bricks = []
+
 
 def draw_window_and_object():
     screen.blit(background, (0, 0))
 
     screen.blit(spaceShip.spaceShipObject, (spaceShip.X, spaceShip.Y))
 
-    for layer in wall.queue:
-        for brick in layer.getAllBricks():
-            if brick is not None:
-                pygame.draw.rect(screen, brick.color, pygame.Rect(brick.x, brick.y, brick.width, brick.height), 0, 3)
+    for brick in wall.queue:
+        pygame.draw.rect(screen, brick.color, pygame.Rect(brick.x, brick.y, brick.width, brick.height), 0, 3)
 
     wall.addLayerOfBricks()
 
 
-def handle_bullets_fire():
+def handle_bullets_collision():
     if len(bullets) == 0:
         return
-    for bullet in bullets:
-        pygame.draw.rect(screen, bullet["color"], bullet["shape"])
-        for layer in wall.queue:
-            for brick in layer.getAllBricks():
-                if spaceShip.detect_collision(brick, bullet):
-                    bullets.remove(bullet)
-                    layer.removeBrick(brick.x)
-        bullet["shape"].y -= 3
-        if bullet["shape"].y < 0:
-            bullets.remove(bullet)
+    for b in bullets:
+        pygame.draw.rect(screen, b["color"], b["shape"])
+        for brick in wall.queue:
+            if brick is not None and spaceShip.detect_collision(brick, b):
+                bullets.remove(b)
+                removed_bricks.append(brick)
+        b["shape"].y -= 3
+        if b["shape"].y < 0:
+            bullets.remove(b)
+    for brick in removed_bricks:
+        wall.removeBrick(brick)
+        removed_bricks.remove(brick)
 
 
 def handle_movement(keys):
@@ -76,7 +77,7 @@ while running:
     keys_pressed = pygame.key.get_pressed()
     handle_movement(keys_pressed)
     draw_window_and_object()
-    handle_bullets_fire()
+    handle_bullets_collision()
 
     pygame.display.update()
 
