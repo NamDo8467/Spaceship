@@ -18,7 +18,6 @@ class Spaceship:
         return bullet
 
     def detect_collision(self, bullet, wall):
-        br = None
         for brick in wall.queue:
             if bullet["shape"].colliderect(pygame.Rect(brick.x, brick.y, brick.width, brick.height)) \
                     and bullet["color"] == brick.color:

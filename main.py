@@ -22,8 +22,6 @@ wall = Wall()
 
 bullets = []
 
-# removed_bricks = []
-
 brick_to_remove = None
 
 def draw_window_and_object():
