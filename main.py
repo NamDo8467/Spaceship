@@ -22,8 +22,9 @@ wall = Wall()
 
 bullets = []
 
-removed_bricks = []
+# removed_bricks = []
 
+brick_to_remove = None
 
 def draw_window_and_object():
     screen.blit(background, (0, 0))
@@ -37,20 +38,20 @@ def draw_window_and_object():
 
 
 def handle_bullets_collision():
+    global wall
+    global brick_to_remove
+
     if len(bullets) == 0:
         return
     for b in bullets:
         pygame.draw.rect(screen, b["color"], b["shape"])
-        for brick in wall.queue:
-            if brick is not None and spaceShip.detect_collision(brick, b):
-                bullets.remove(b)
-                removed_bricks.append(brick)
+        brick_to_remove = spaceShip.detect_collision(b, wall)
+        if brick_to_remove:
+            bullets.remove(b)
+            wall.removeBrick(brick_to_remove)
         b["shape"].y -= 3
         if b["shape"].y < 0:
             bullets.remove(b)
-    for brick in removed_bricks:
-        wall.removeBrick(brick)
-        removed_bricks.remove(brick)
 
 
 def handle_movement(keys):
